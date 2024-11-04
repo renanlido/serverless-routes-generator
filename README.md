@@ -55,7 +55,7 @@ pnpm add @renanlido/serverless-routes-generator
 ```json
 {
   "scripts": {
-    "generate-routes": "serverless-routes-generator init"
+    "generator-init": "serverless-routes-generator init"
   }
 }
 
