@@ -5,6 +5,7 @@
 	"main": "dist/index.js",
 	"typings": "dist/index.d.ts",
 	"types": "dist/index.d.ts",
+	"private": false,
 	"bin": {
 		"serverless-routes-generator": "dist/cli.js"
 	},
