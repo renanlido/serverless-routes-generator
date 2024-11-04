@@ -11,7 +11,7 @@ export type GeneratorConfigFileData = {
 
 export { createHandler } from './route-decorator'
 
-async function importConfigFile() {
+export default async function importConfigFile() {
   try {
     const filename = 'serverless-route.config'
 

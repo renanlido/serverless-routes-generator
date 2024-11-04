@@ -21,7 +21,7 @@
     "emitDecoratorMetadata": true,
     "strictPropertyInitialization": false
   },
-  "include": ["src/**/*", "example/**/*"],
+  "include": ["src/**/*", "example/**/*", "bin/**/*"],
   "exclude": ["node_modules"]
   // "ts-node": {
   //   "require": ["tsconfig-paths/register"]
