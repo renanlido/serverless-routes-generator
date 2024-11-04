@@ -1,73 +1,68 @@
 {
-  "name": "@renanlido/serverless-routes-generator",
-  "version": "1.0.0",
-  "description": "Minimal package that automates routes creation for serverless applications with using serverless.ts config file",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
-  "types": "dist/index.d.ts",
-  "bin": {
-    "serverless-routes-generator": "dist/cli.js"
-  },
-  "scripts": {
-    "link:bin": "npm link",
-    "generate:routes": "tsx dist/index.js",
-    "generater:routes:bin": "serverless-routes-generator generate",
-    "generate:bin:init": "serverless-routes-generator init",
-    "postbuild": "npm run check:exports",
-    "build": "tsup --config tsup.config.ts",
-    "type-check": "tsc --noEmit",
-    "check:fix": "biome check --fix .",
-    "validate": "npm run type-check && npm run check:fix",
-    "check:exports": "attw --pack .",
-    "local-release": "npm run build && changeset version && changeset publish"
-  },
-  "keywords": [
-    "serverless",
-    "route",
-    "generator",
-    "typescript"
-  ],
-  "exports": {
-    "./package.json": "./package.json",
-    ".": {
-      "import": {
-        "types": "./dist/index.d.mts",
-        "import": "./dist/index.mjs",
-        "default": "./dist/index.mjs"
-      },
-      "require": {
-        "types": "./dist/index.d.ts",
-        "import": "./dist/index.js",
-        "require": "./dist/index.js"
-      }
-    }
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/renanlido/serverless-routes-generator.git"
-  },
-  "homepage": "https://github.com/renanlido/serverless-routes-generator#readme",
-  "bugs": {
-    "url": "https://github.com/renanlido/serverless-routes-generator/issues"
-  },
-  "files": [
-    "dist"
-  ],
-  "author": "Renan Oliveira <renanlido@yahoo.com.br> (https://www.renanlido.me)",
-  "license": "MIT",
-  "dependencies": {
-    "commander": "^12.1.0",
-    "glob": "^11.0.0",
-    "tsx": "^4.19.2",
-    "typescript": "^5.6.3"
-  },
-  "devDependencies": {
-    "@arethetypeswrong/cli": "^0.16.4",
-    "@biomejs/biome": "1.9.4",
-    "@changesets/cli": "^2.27.9",
-    "@swc/core": "^1.8.0",
-    "@types/node": "^22.8.7",
-    "lefthook": "^1.8.2",
-    "tsup": "^8.3.5"
-  }
+	"name": "@renanlido/serverless-routes-generator",
+	"version": "1.0.0",
+	"description": "Minimal package that automates routes creation for serverless applications with using serverless.ts config file",
+	"main": "dist/index.js",
+	"typings": "dist/index.d.ts",
+	"types": "dist/index.d.ts",
+	"bin": {
+		"serverless-routes-generator": "dist/cli.js"
+	},
+	"scripts": {
+		"link:bin": "npm link",
+		"generate:routes": "tsx dist/index.js",
+		"generater:routes:bin": "serverless-routes-generator generate",
+		"generate:bin:init": "serverless-routes-generator init",
+		"postbuild": "npm run check:exports",
+		"build": "tsup --config tsup.config.ts",
+		"type-check": "tsc --noEmit",
+		"check": "biome check .",
+		"check:fix": "biome check --fix .",
+		"validate": "npm run type-check && npm run check:fix",
+		"check:exports": "attw --pack .",
+		"local-release": "npm run build && changeset version && changeset publish"
+	},
+	"keywords": ["serverless", "route", "generator", "typescript"],
+	"exports": {
+		"./package.json": "./package.json",
+		".": {
+			"import": {
+				"types": "./dist/index.d.mts",
+				"import": "./dist/index.mjs",
+				"default": "./dist/index.mjs"
+			},
+			"require": {
+				"types": "./dist/index.d.ts",
+				"import": "./dist/index.js",
+				"require": "./dist/index.js"
+			}
+		}
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/renanlido/serverless-routes-generator.git"
+	},
+	"homepage": "https://github.com/renanlido/serverless-routes-generator#readme",
+	"bugs": {
+		"url": "https://github.com/renanlido/serverless-routes-generator/issues"
+	},
+	"files": ["dist"],
+	"author": "Renan Oliveira <renanlido@yahoo.com.br> (https://www.renanlido.me)",
+	"license": "MIT",
+	"dependencies": {
+		"commander": "^12.1.0",
+		"glob": "^11.0.0",
+		"tsx": "^4.19.2",
+		"typescript": "^5.6.3"
+	},
+	"devDependencies": {
+		"@arethetypeswrong/cli": "^0.16.4",
+		"@biomejs/biome": "1.9.4",
+		"@changesets/cli": "^2.27.9",
+		"@swc/core": "^1.8.0",
+		"@types/node": "^22.8.7",
+		"lefthook": "^1.8.2",
+		"pkg-pr-new": "^0.0.30",
+		"tsup": "^8.3.5"
+	}
 }

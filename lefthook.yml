@@ -5,4 +5,4 @@ pre-commit:
       run: npm run check -- --staged --fix --no-errors-on-unmatched
       stage_fixed: true
     typecheck:
-      run: npm run typecheck
+      run: npm run type-check
