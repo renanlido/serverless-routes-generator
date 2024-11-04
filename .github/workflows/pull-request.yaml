@@ -4,11 +4,12 @@ concurrency:
   group: ${{ github.repository }}-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-on: [pull_request]
+on: [pull_request] # Run only on pull_request, to also get status updates in PRs. We omit push because this would run the steps two times (for push and pull_request).
 
 permissions:
   actions: write
   contents: read
+  # Required to put a comment into the pull-request
   pull-requests: write
 
 jobs:
@@ -16,36 +17,9 @@ jobs:
     name: ⬣ Linting
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-
-      - name: Enable Corepack
-        run: corepack enable
-
-      - name: Prepare pnpm
-        run: corepack prepare pnpm@latest --activate
-
-      - name: Cache pnpm store
-        uses: actions/cache@v3
-        with:
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
+      - uses: actions/checkout@v4
       - uses: biomejs/setup-biome@v2
-
-      - name: Run Biome Linting
-        run: pnpm biome ci . --reporter=github
+      - run: biome ci . --reporter=github
 
   typecheck:
     name: 🔎 Type check
@@ -54,31 +28,18 @@ jobs:
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.12.1
 
-      - name: Checkout repository
+      - name: ⬇️ Checkout repo
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: ⎔ Setup node
         uses: actions/setup-node@v4
         with:
           node-version-file: "package.json"
-          cache: 'pnpm'
 
-      - name: Enable Corepack
-        run: corepack enable
-
-      - name: Prepare pnpm
-        run: corepack prepare pnpm@latest --activate
-
-      - name: Cache pnpm store
-        uses: actions/cache@v3
+      - name: 📥 Download deps
+        uses: bahmutov/npm-install@v1
         with:
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+          useLockFile: false
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Type check
-        run: pnpm run typecheck
+      - name: 🔎 Type check
+        run: npm run typecheck

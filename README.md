@@ -28,7 +28,7 @@ Introducing serverless-routes-generator – an npm package designed to simplify 
 - **Linting setup** - Lint your code with ESLint and Prettier already setup for you.
 - **GitHub Actions setup** - Automate deployments to npm by using GitHub Actions.
 
-## Setup
+## Usage Setup
 
 1. Install the package:
 
@@ -50,25 +50,13 @@ pnpm
 pnpm add @renanlido/serverless-routes-generator
 ```
 
-2. Create de configuration file on root of your project:
-
-javascript
-
-```javascript
- module.exports = {
-  pathPattern: "modules/**/handler.ts",
-  projectRoot: "example/src",
-  generatedFileName: "serverless-route",
-};
-```
-
-json
+2. Create de configuration script run and customize the configuration for your project:
 
 ```json
 {
- "pathPattern": "modules/**/handler.ts",
- "projectRoot": "example/src",
- "generatedFileName": "serverless-route"
+  "scripts": {
+    "generate-routes": "serverless-routes-generator init"
+  }
 }
 
 ```
@@ -98,15 +86,39 @@ export const generatePresignedLink = createHandler(
 
 4. Run the command to generate the routes:
 
-```bash
-npx @renanlido/serverless-routes-generator
+```json
+{
+  "scripts": {
+    "generate-routes": "serverless-routes-generator generate"
+  }
+}
 
 ```
 
-## Scripts
+## Development Setup
 
+1. Clone the repository:
+
+```bash
+git clone git@github.com:renanlido/serverless-routes-generator.git
+```
+
+2. Install the dependencies:
+
+```bash
+npm install
+```
+
+## Development Scripts
+
+- `npm run generate:routes:bin` - Generate the routes.
+- `npm run generate:bin:init` - Generate the bin.
+- `npm run generate:bin` - Generate the bin.
+- `npm run generate:routes` - Generate the routes.
+- `npm run link:bin` - Link the package to the global scope.
 - `npm run build` - Build the package.
-- `npm run test` - Run the tests.
-- `npm run lint` - Lint the code.
-- `npm run dev` - Start the package and ESM test app in watch mode for development.
-- `npm run dev:cjs` - Start the package and CJS test app in watch mode for development.
+- `npm run type-check` - Check the types.
+- `npm run check:fix` - Check and fix the code.
+- `npm run validate` - Run the type-check and check:fix scripts.
+- `npm run check:exports` - Check the exports.
+- `npm run local-release` - Build the package, version it, and publish it locally.

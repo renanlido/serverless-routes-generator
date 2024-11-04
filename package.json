@@ -9,14 +9,17 @@
     "serverless-routes-generator": "dist/cli.js"
   },
   "scripts": {
-    "generate-routes": "tsx dist/index.js",
-    "postbuild": "pnpm check:exports",
+    "link:bin": "npm link",
+    "generate:routes": "tsx dist/index.js",
+    "generater:routes:bin": "serverless-routes-generator generate",
+    "generate:bin:init": "serverless-routes-generator init",
+    "postbuild": "npm run check:exports",
     "build": "tsup --config tsup.config.ts",
     "type-check": "tsc --noEmit",
     "check:fix": "biome check --fix .",
-    "validate": "pnpm type-check && pnpm check:fix",
+    "validate": "npm run type-check && npm run check:fix",
     "check:exports": "attw --pack .",
-    "local-release": "pnpm build && changeset version && changeset publish"
+    "local-release": "npm run build && changeset version && changeset publish"
   },
   "keywords": [
     "serverless",
@@ -56,18 +59,15 @@
     "commander": "^12.1.0",
     "glob": "^11.0.0",
     "tsx": "^4.19.2",
-    "typescript": "^5.6.3",
-    "@renanlido/serverless-route-generator": "*"
+    "typescript": "^5.6.3"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.16.4",
     "@biomejs/biome": "1.9.4",
     "@changesets/cli": "^2.27.9",
     "@swc/core": "^1.8.0",
-    "@types/commander": "^2.12.5",
     "@types/node": "^22.8.7",
     "lefthook": "^1.8.2",
     "tsup": "^8.3.5"
-  },
-  "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee"
+  }
 }
