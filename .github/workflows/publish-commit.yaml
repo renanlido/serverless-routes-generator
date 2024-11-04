@@ -8,6 +8,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - run: corepack enable
       - uses: actions/setup-node@v4
@@ -22,12 +24,26 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - run: pnpx pkg-pr-new publish
-
-      # //criar tag version patch pegando a tag dinamicamente e publicar no npm
-      - run: git tag -a v$(npm version patch) -m "v$(npm version patch)"
-      - run: git push origin v$(npm version patch)
-      - run: npm publish --access public
-
+      - name: Bump version
+        run: |
+         npm version patch -m "Bump version to %s [skip ci]"
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push changes
+        run: |
+          git push origin main --follow-tags
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.bump_version.outputs.new_version }}
+          release_name: Release ${{ steps.bump_version.outputs.new_version }}
+          body: "Automated release ${{ steps.bump_version.outputs.new_version }}"
+          draft: false
+          prerelease: false
