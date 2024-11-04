@@ -1,11 +1,14 @@
 {
 	"name": "@renanlido/serverless-routes-generator",
-	"version": "1.0.0",
+	"version": "1.0.2",
 	"description": "Minimal package that automates routes creation for serverless applications with using serverless.ts config file",
 	"main": "dist/index.js",
 	"typings": "dist/index.d.ts",
 	"types": "dist/index.d.ts",
 	"private": false,
+	"publishConfig": {
+		"access": "public"
+	},
 	"bin": {
 		"serverless-routes-generator": "dist/cli.js"
 	},
