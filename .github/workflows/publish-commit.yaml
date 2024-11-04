@@ -22,7 +22,7 @@ jobs:
       - run: corepack enable
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 20.x
           cache: "pnpm"
 
 
@@ -69,6 +69,6 @@ jobs:
           prerelease: false
 
       - name: Publish to npm 🚀
-        run: npm publish
+        run: npm publish --access public
         env:
-            NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
