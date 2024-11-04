@@ -23,3 +23,11 @@ jobs:
         run: pnpm build
 
       - run: pnpx pkg-pr-new publish
+
+      # //criar tag version patch pegando a tag dinamicamente e publicar no npm
+      - run: git tag -a v$(npm version patch) -m "v$(npm version patch)"
+      - run: git push origin v$(npm version patch)
+      - run: npm publish --access public
+
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
