@@ -1,4 +1,4 @@
-name: 🚀 pkg-pr-new
+name: Create Release and publish on NPM 🚀
 permissions:
   contents: write
   issues: write
@@ -67,3 +67,8 @@ jobs:
           body: "Automated release ${{ steps.bump_version.outputs.new_version }}"
           draft: false
           prerelease: false
+
+      - name: Publish to npm 🚀
+        run: npm publish
+        env:
+            NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
