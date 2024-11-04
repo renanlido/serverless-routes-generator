@@ -1,0 +1,68 @@
+{
+  "name": "serverless-routes-generator",
+  "version": "1.0.0",
+  "description": "Minimal package that automates routes creation for serverless applications with using serverless.ts config file",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "generate-routes": "tsx dist/index.js",
+    "postbuild": "pnpm check:exports",
+    "build": "tsup --config tsup.config.ts",
+    "type-check": "tsc --noEmit",
+    "check:fix": "biome check --fix .",
+    "validate": "pnpm type-check && pnpm check:fix",
+    "check:exports": "attw --pack .",
+    "local-release": "pnpm build && changeset version && changeset publish"
+  },
+  "keywords": [
+    "serverless",
+    "route",
+    "generator",
+    "typescript"
+  ],
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "import": "./dist/index.mjs",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js",
+        "require": "./dist/index.js"
+      }
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/renanlido/serverless-routes-generator.git"
+  },
+  "homepage": "https://github.com/renanlido/serverless-routes-generator#readme",
+  "bugs": {
+    "url": "https://github.com/renanlido/serverless-routes-generator/issues"
+  },
+  "files": [
+    "dist"
+  ],
+  "author": "Renan Oliveira <renanlido@yahoo.com.br> (https://www.renanlido.me)",
+  "license": "MIT",
+  "dependencies": {
+    "glob": "^11.0.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.16.4",
+    "@biomejs/biome": "1.9.4",
+    "@changesets/cli": "^2.27.9",
+    "@renanlido/eslint-config": "^1.3.0",
+    "@swc/core": "^1.8.0",
+    "@types/node": "^22.8.7",
+    "lefthook": "^1.8.2",
+    "tsup": "^8.3.5"
+  },
+  "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee"
+}
