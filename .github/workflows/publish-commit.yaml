@@ -24,6 +24,16 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit build artifacts
+        run: |
+          git add dist/ package.json
+          git commit -m "Add build artifacts and update package.json [skip ci]" || echo "No changes to commit"
+
       - name: Bump version
         run: |
          npm version patch -m "Bump version to %s [skip ci]"
