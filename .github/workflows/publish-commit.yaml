@@ -1,5 +1,13 @@
 name: 🚀 pkg-pr-new
-on: [push, pull_request]
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   build:
