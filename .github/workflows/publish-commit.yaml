@@ -24,6 +24,9 @@ jobs:
         with:
           node-version: 20.x
           cache: "pnpm"
+          scope: "@renanlido"
+          registry-url: "https://registry.npmjs.org"
+          always-auth: true
 
 
       - name: Install dependencies
@@ -69,6 +72,11 @@ jobs:
           prerelease: false
 
       - name: Publish to npm 🚀
-        run: npm publish --access public
+        run: pnpm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Show pnpm error log
+        if: failure()
+        run: |
+          cat /home/runner/.pnpm-store/v3/debug.log || true
