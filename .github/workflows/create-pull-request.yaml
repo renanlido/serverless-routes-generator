@@ -20,14 +20,26 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract Branch Name
+        shell: bash
+        run: |
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
 
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v7
         with:
-          token: ${{ secrets.PAT_TOKEN }}
-          commit-message: Update Main
-          title: PR Develop to Main
-          branch: main
-          draft: true
-          reviewers: renanlido
+            token: ${{ secrets.PAT_TOKEN }}
+            base: main
+            branch: ${{ env.BRANCH_NAME }}
+            title: "PR: ${{ env.BRANCH_NAME }} to main"
+            body: |
+              Automated PR from ${{ env.BRANCH_NAME }}
+
+              Please review the changes.
+            draft: false
+            reviewers: renanlido
