@@ -1,8 +1,9 @@
 name: Create Pull Request on New Branch
 
 on:
-  create:
-    ref_type: branch
+  push:
+    branches:
+      - '**'
 
 permissions:
   contents: write
@@ -22,23 +23,22 @@ jobs:
         id: extract_branch
         run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
 
-      # 3. Verificar se a Branch é Permitida (Opcional)
-      - name: Validate Branch Name
-        if: startsWith(env.BRANCH_NAME, 'feature/') || startsWith(env.BRANCH_NAME, 'bugfix/') || startsWith(env.BRANCH_NAME, 'hotfix/')
-        run: echo "Branch name is valid."
-
       # 4. Criar a Pull Request
-      - name: Create Pull Request
+      - name: Criar Pull Request Automática
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          base: main  # Branch de destino para a PR
+          base: main
           head: ${{ env.BRANCH_NAME }}  # Branch de origem (nova branch)
-          title: "Automated PR: Merge `${{ env.BRANCH_NAME }}` into main"
+          title: "PR Automática: Merge `${{ env.BRANCH_NAME }}` para main"
           body: |
             Esta é uma PR automática para integrar as mudanças da branch `${{ env.BRANCH_NAME }}` na branch `main`.
-            - Atualizado em: *${{ steps.extract_branch.outputs.BRANCH_NAME }}*
-            - Auto-gerado pela GitHub Action.
+
+            **Detalhes da Branch:**
+            - Nome da Branch: `${{ env.BRANCH_NAME }}`
+            - Criada por: @${{ github.actor }}
+
+            *Auto-gerado pela GitHub Action.*
           labels: automated-pr
-          assignees: renanlido
+          assignees: renanlido  # Substitua pelo seu usuário ou pelo responsável adequado
           draft: false
