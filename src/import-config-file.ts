@@ -5,6 +5,7 @@ export type GeneratorConfigFileData = {
 	pathPattern: string;
 	projectRoot: string;
 	generatedFileName?: string;
+	generatedFileExtension?: string;
 };
 
 export async function importConfigFile() {
@@ -31,8 +32,17 @@ export async function importConfigFile() {
 			return configData;
 		}
 
+		const configFileTs = path.join(process.cwd(), `${filename}.ts`);
+		if (fs.existsSync(configFileTs)) {
+			const { config } = await import(configFileTs);
+
+			const configData = config as GeneratorConfigFileData;
+
+			return configData;
+		}
+
 		throw new Error(
-			`Could not find config file at ${configFileJson} or ${configFileJs}`,
+			`Could not find config file at ${configFileJson} or ${configFileJs} or ${configFileTs}`,
 		);
 	} catch (error) {
 		const err = error as Error;

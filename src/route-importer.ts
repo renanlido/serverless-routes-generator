@@ -37,7 +37,10 @@ export async function generate(configFile: GeneratorConfigFileData) {
 
 		const projectRoot = process.cwd();
 		const srcPath = path.join(projectRoot, configFile.projectRoot);
-		const serverlessPath = path.join(projectRoot, `${fileName}.js`);
+		const serverlessPath = path.join(
+			projectRoot,
+			`${fileName}.${configFile?.generatedFileExtension ?? "js"}`,
+		);
 
 		const generator = new ServerlessGenerator(
 			srcPath,

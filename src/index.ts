@@ -4,6 +4,8 @@ import { lambdaIsRunning } from "./utils/lambda-is-running";
 
 export { createHandler } from "./route-decorator";
 
+export { type GeneratorConfigFileData } from "./import-config-file";
+
 export const execute = async () => {
 	if (lambdaIsRunning()) {
 		return;

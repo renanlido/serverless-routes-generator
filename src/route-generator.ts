@@ -1,11 +1,8 @@
-// tools/serverless-router-generator/route-generator.ts
 import * as fs from "fs";
 import * as path from "path";
 
 import { GeneratorConfigFileData } from "./import-config-file";
 import { getRouteConfigs } from "./route-decorator";
-
-// tools/generate-routes.ts
 
 export class ServerlessGenerator {
 	constructor(
@@ -14,7 +11,7 @@ export class ServerlessGenerator {
 		private readonly config: GeneratorConfigFileData,
 	) {}
 
-	private generateServerlessConfig(): string {
+	private generateFunctionConfig(): Record<string, unknown> {
 		const routes = getRouteConfigs();
 
 		const functions: Record<string, unknown> = {};
@@ -53,14 +50,32 @@ export class ServerlessGenerator {
 			};
 		});
 
+		return functions;
+	}
+
+	private generateFunctionConfigJS(): string {
+		const functions = this.generateFunctionConfig();
+
 		return `
     module.exports = {
       functions: ${JSON.stringify(functions, null, 2)}
     };`;
 	}
 
+	private generateFunctionConfigTS(): string {
+		const functions = this.generateFunctionConfig();
+
+		return `export const functions = ${JSON.stringify(functions, null, 2)};`;
+	}
+
 	public generate(): void {
-		const config = this.generateServerlessConfig();
+		let config: string;
+
+		if (this.config.generatedFileExtension === "ts") {
+			config = this.generateFunctionConfigTS();
+		} else {
+			config = this.generateFunctionConfigJS();
+		}
 
 		fs.writeFileSync(this.outputPath, config);
 		console.log(`Serverless config generated at ${this.outputPath}`);
