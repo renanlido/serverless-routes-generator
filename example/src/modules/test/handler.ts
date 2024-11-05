@@ -8,6 +8,8 @@ export const routePath = createHandler(
 		name: "routePath",
 	},
 	async () => {
+		// This is a simple example of a handler that returns a JSON object
+
 		return {
 			statusCode: 200,
 			body: JSON.stringify({ message: "Hello World" }),
