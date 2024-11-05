@@ -3,7 +3,7 @@ name: Pull Request Action
 on:
   push:
     branches:
-      - '*'
+      - '**'
 
 jobs:
   create-pull-request:
