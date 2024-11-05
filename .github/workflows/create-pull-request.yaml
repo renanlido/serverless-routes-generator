@@ -29,7 +29,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           base: main
-          branch: ${{ env.BRANCH_NAME }}  # Branch de origem (nova branch)
+          branch: 'chore/workflows'
           title: "PR Automática: Merge `${{ env.BRANCH_NAME }}` para main"
           commit-message: "Automated PR for branch creation"
           committer: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
