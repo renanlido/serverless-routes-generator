@@ -21,7 +21,7 @@ export default defineConfig([
 		splitting: false,
 		clean: true,
 		dts: true,
-		minify: true,
+		minify: false,
 		format: ["cjs", "esm"],
 		outDir: "./dist",
 	},
