@@ -3,8 +3,8 @@ name: Create Pull Request on New Branch
 on:
   push:
     branches-ignore:
-      - 'main'   # Ignora pushes na main para evitar loops
-      - 'master' # Ignora pushes na master também, se aplicável
+      - 'main'
+      - 'master'
 
 permissions:
   contents: write
@@ -18,19 +18,37 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Importante para ter acesso ao histórico completo
+          fetch-depth: 0
+          token: ${{ secrets.PAT_TOKEN }}  # Usando PAT_TOKEN também no checkout
+
+      - name: Debug Information
+        run: |
+          echo "Current branch: ${GITHUB_REF#refs/heads/}"
+          echo "Target branch: main"
+          echo "Actor: ${{ github.actor }}"
+          echo "Repository: ${{ github.repository }}"
+          echo "Event name: ${{ github.event_name }}"
+          echo "Token presence check: ${{ secrets.PAT_TOKEN != '' }}"
 
       - name: Extract Branch Name
         shell: bash
         run: |
           BRANCH_NAME=${GITHUB_REF#refs/heads/}
           echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
+          echo "Branch name extracted: $BRANCH_NAME"
+
+      - name: Check for Changes
+        run: |
+          git fetch origin main
+          git diff --quiet origin/main && echo "No changes detected" || echo "Changes detected"
 
       - name: Create Pull Request
+        id: cpr
         uses: peter-evans/create-pull-request@v7
         with:
-          token: ${{ secrets.PAT_TOKEN }}  # Use um PAT token ao invés do GITHUB_TOKEN
+          token: ${{ secrets.PAT_TOKEN }}  # Usando PAT_TOKEN aqui
           base: main
+          branch: ${{ env.BRANCH_NAME }}
           title: "feat: Merge ${{ env.BRANCH_NAME }} into main"
           body: |
             ## Automated Pull Request
@@ -41,9 +59,27 @@ jobs:
             ### Changes Included
             - Automated PR creation from branch ${{ env.BRANCH_NAME }}
             - Please review the changes before merging
-
           labels: |
             automated-pr
             needs-review
           assignees: ${{ github.actor }}
           draft: false
+
+      - name: Check outputs
+        if: ${{ steps.cpr.outputs.pull-request-number }}
+        run: |
+          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
+          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
+
+      - name: PR Creation Status
+        if: always()
+        run: |
+          if [ "${{ steps.cpr.outputs.pull-request-number }}" != "" ]; then
+            echo "✅ PR created successfully"
+          else
+            echo "❌ PR creation might have failed"
+            echo "Current branch status:"
+            git status
+            echo "Branch difference with main:"
+            git diff origin/main
+          fi
