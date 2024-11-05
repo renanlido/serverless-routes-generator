@@ -1,10 +1,9 @@
 # @renanlido/serverless-routes-generator
 
 ![GitHub Repo stars](https://img.shields.io/github/stars/renanlido/serverless-routes-generator?style=social)
-![npm](https://img.shields.io/npm/v/serverless-routes-generator?style=plastic)
+![npm](https://img.shields.io/npm/v/@renanlido/serverless-routes-generator?style=plastic)
 ![GitHub](https://img.shields.io/github/license/renanlido/serverless-routes-generator?style=plastic)
-![npm](https://img.shields.io/npm/dy/serverless-routes-generator?style=plastic)
-![npm](https://img.shields.io/npm/dw/serverless-routes-generator?style=plastic)
+![npm](https://img.shields.io/npm/dy/@renanlido/serverless-routes-generator?style=plastic)
 ![GitHub top language](https://img.shields.io/github/languages/top/renanlido/serverless-routes-generator?style=plastic)
 
 Full starter stack to develop CJS/ESM compatible npm packages with TypeScript, Vitest, ESLint, Prettier, and GitHub Actions.
@@ -122,3 +121,15 @@ pnpm install
 - `npm run validate` - Run the type-check and check:fix scripts.
 - `npm run check:exports` - Check the exports.
 - `npm run local-release` - Build the package, version it, and publish it locally.
+
+## Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request on GitHub.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE.md](<https://github.com/renanlido/serverless-routes-generator/blob/main/LICENSE.md>) file for details.
+
+## Acknowledgements
+
+This project was inspired by the need to streamline route management in Serverless applications. Special thanks to the open-source community for their valuable contributions.
