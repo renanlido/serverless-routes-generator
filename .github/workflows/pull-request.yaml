@@ -29,9 +29,6 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'pnpm'
-          registry-url: 'https://registry.npmjs.org'
-          scope: '@renanlido'
-          always-auth: true
 
       - name: Install dependencies
         run: pnpm install
@@ -57,12 +54,9 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'pnpm'
-          registry-url: 'https://registry.npmjs.org'
-          scope: '@renanlido'
-          always-auth: true
 
       - name: Install dependencies
         run: pnpm install
 
       - name: 🔎 Executar Verificação de Tipos
-        run: pnpm run typecheck
+        run: pnpm run type-check
