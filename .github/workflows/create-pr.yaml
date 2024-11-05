@@ -1,0 +1,32 @@
+name: Create Pull Request on New Branch
+
+permissions:
+  contents: write
+  pull-requests: write
+# Definimos que o workflow será disparado quando uma nova branch for criada
+on:
+  push:
+    branches:
+      - '**'
+jobs:
+  create_pull_request:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Extract Branch Name
+        run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+
+      - name: Criar Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: main
+          branch: ${{ env.BRANCH_NAME }}
+          title: "Automated PR: Merge `${{ env.BRANCH_NAME }}` into main"
+          body: |
+            Esta é uma PR automática para integrar as mudanças da branch `${{ env.BRANCH_NAME }}` na branch `main`.
+          draft: false
+          labels: automated-pr
