@@ -35,13 +35,7 @@ function getContext(match: RegExpMatchArray) {
 		const fullPath = match[1];
 
 		const directory = path.dirname(fullPath);
-
-		const indexSRC = directory.indexOf(path.join("src"));
-
-		if (indexSRC !== -1) {
-			const relativePath = directory.substring(indexSRC);
-			return relativePath;
-		}
+		return directory;
 	}
 
 	return null;

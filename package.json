@@ -13,9 +13,10 @@
 		"serverless-routes-generator": "dist/cli.js"
 	},
 	"scripts": {
+		"serverless:offline": "serverless offline start --reloadHandler -s local",
 		"link:bin": "npm link",
-		"generate:routes": "tsx dist/index.js",
-		"generater:routes:bin": "serverless-routes-generator generate",
+		"generate:routes": "tsx src/index.ts",
+		"generate:routes:bin": "serverless-routes-generator generate",
 		"generate:bin:init": "serverless-routes-generator init",
 		"postbuild": "npm run check:exports",
 		"build": "tsup --config tsup.config.ts",
@@ -26,12 +27,7 @@
 		"check:exports": "attw --pack .",
 		"local-release": "npm run build && changeset version && changeset publish"
 	},
-	"keywords": [
-		"serverless",
-		"route",
-		"generator",
-		"typescript"
-	],
+	"keywords": ["serverless", "route", "generator", "typescript"],
 	"exports": {
 		"./package.json": "./package.json",
 		".": {
@@ -55,9 +51,7 @@
 	"bugs": {
 		"url": "https://github.com/renanlido/serverless-routes-generator/issues"
 	},
-	"files": [
-		"dist"
-	],
+	"files": ["dist"],
 	"author": "Renan Oliveira <renanlido@yahoo.com.br> (https://www.renanlido.me)",
 	"license": "MIT",
 	"dependencies": {
@@ -70,10 +64,23 @@
 		"@arethetypeswrong/cli": "^0.16.4",
 		"@biomejs/biome": "1.9.4",
 		"@changesets/cli": "^2.27.9",
+		"@renanlido/serverless-routes-generator": "*",
+		"@serverless/typescript": "^3.38.0",
 		"@swc/core": "^1.8.0",
 		"@types/node": "^22.8.7",
 		"lefthook": "^1.8.2",
 		"pkg-pr-new": "^0.0.30",
+		"serverless": ">=3.0.0 <4.0.0",
+		"serverless-dotenv-plugin": "^6.0.0",
+		"serverless-esbuild": "^1.54.5",
+		"serverless-ignore": "^0.2.1",
+		"serverless-lift": "^1.30.3",
+		"serverless-localstack": "^1.2.1",
+		"serverless-offline": "^14.3.3",
+		"serverless-plugin-resource-tagging": "^1.2.0",
+		"serverless-prune-plugin": "^2.1.0",
+		"ts-node": "^10.9.2",
+		"tsconfig-paths": "^4.2.0",
 		"tsup": "^8.3.5"
 	},
 	"packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee"
