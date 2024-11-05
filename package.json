@@ -51,7 +51,7 @@
 	"bugs": {
 		"url": "https://github.com/renanlido/serverless-routes-generator/issues"
 	},
-	"files": ["dist"],
+	"files": ["dist", "README", "LICENSE"],
 	"author": "Renan Oliveira <renanlido@yahoo.com.br> (https://www.renanlido.me)",
 	"license": "MIT",
 	"dependencies": {
