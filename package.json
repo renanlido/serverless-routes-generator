@@ -1,6 +1,6 @@
 {
 	"name": "@renanlido/serverless-routes-generator",
-	"version": "1.0.11",
+	"version": "1.0.12",
 	"description": "Minimal package that automates routes creation for serverless applications with using serverless.ts config file",
 	"main": "dist/index.js",
 	"typings": "dist/index.d.ts",
@@ -27,7 +27,12 @@
 		"check:exports": "attw --pack .",
 		"local-release": "npm run build && changeset version && changeset publish"
 	},
-	"keywords": ["serverless", "route", "generator", "typescript"],
+	"keywords": [
+		"serverless",
+		"route",
+		"generator",
+		"typescript"
+	],
 	"exports": {
 		"./package.json": "./package.json",
 		".": {
@@ -51,7 +56,11 @@
 	"bugs": {
 		"url": "https://github.com/renanlido/serverless-routes-generator/issues"
 	},
-	"files": ["dist", "README", "LICENSE"],
+	"files": [
+		"dist",
+		"README",
+		"LICENSE"
+	],
 	"author": "Renan Oliveira <renanlido@yahoo.com.br> (https://www.renanlido.me)",
 	"license": "MIT",
 	"dependencies": {
