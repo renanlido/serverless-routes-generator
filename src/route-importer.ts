@@ -5,6 +5,7 @@ import { globSync } from "glob";
 
 import { GeneratorConfigFileData } from "./import-config-file";
 import { ServerlessGenerator } from "./route-generator";
+import { lambdaIsRunning } from "./utils/lambda-is-running";
 
 async function importAllHandlers(data: GeneratorConfigFileData) {
 	const handlersPath = path.join(
@@ -26,6 +27,10 @@ async function importAllHandlers(data: GeneratorConfigFileData) {
 
 export async function generate(configFile: GeneratorConfigFileData) {
 	try {
+		if (lambdaIsRunning()) {
+			return;
+		}
+
 		await importAllHandlers(configFile);
 
 		const fileName = configFile?.generatedFileName ?? "serverless-routes";

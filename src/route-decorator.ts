@@ -1,4 +1,5 @@
 import path from "path";
+import { lambdaIsRunning } from "./utils/lambda-is-running";
 
 // src/shared/decorators/route.ts
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
@@ -9,24 +10,6 @@ interface RouteConfig {
 	cors?: boolean;
 	name?: string;
 }
-
-enum LAMBDA_NAMES {
-	AWS = "AWS_LAMBDA_FUNCTION_NAME",
-	AZURE = "AZURE_FUNCTIONS_ENVIRONMENT",
-	GOOGLE = "GOOGLE_CLOUD_FUNCTION_NAME",
-}
-
-const lambdaIsRunning = () => {
-	if (
-		process.env[LAMBDA_NAMES.AWS] ||
-		process.env[LAMBDA_NAMES.AZURE] ||
-		process.env[LAMBDA_NAMES.GOOGLE]
-	) {
-		return true;
-	}
-
-	return false;
-};
 
 const routeConfigs = new Map<string, RouteConfig & { context: string }>();
 

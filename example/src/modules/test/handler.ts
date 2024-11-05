@@ -1,4 +1,6 @@
-import { createHandler } from "../../../../src/route-decorator";
+// import { createHandler } from "../../../../src/route-decorator";
+
+import { createHandler } from "@renanlido/serverless-routes-generator";
 
 export const routePath = createHandler(
 	{
