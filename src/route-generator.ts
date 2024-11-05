@@ -33,7 +33,7 @@ export class ServerlessGenerator {
 
 			const handlerPath = path.relative(
 				this.basePath,
-				path.join(this.basePath, relativePath, route.handler),
+				path.join(this.basePath, relativePath, route.handlerRoutePath),
 			);
 
 			functions[functionName] = {

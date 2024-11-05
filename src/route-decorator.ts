@@ -26,7 +26,7 @@ function getContext(match: RegExpMatchArray) {
 
 export const createHandler = (
 	config: RouteConfig,
-	handler: (...args: unknown[]) => unknown,
+	handler: (...args: any[]) => any,
 ) => {
 	if (lambdaIsRunning()) {
 		return handler;
@@ -59,8 +59,10 @@ export const createHandler = (
 };
 
 export const getRouteConfigs = () => {
-	return Array.from(routeConfigs.entries()).map(([handler, config]) => ({
-		handler,
-		...config,
-	}));
+	return Array.from(routeConfigs.entries()).map(
+		([handlerRoutePath, config]) => ({
+			handlerRoutePath,
+			...config,
+		}),
+	);
 };
