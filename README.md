@@ -106,7 +106,7 @@ git clone git@github.com:renanlido/serverless-routes-generator.git
 2. Install the dependencies:
 
 ```bash
-npm install
+pnpm install
 ```
 
 ## Development Scripts

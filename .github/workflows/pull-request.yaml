@@ -16,15 +16,21 @@ jobs:
     name: ⬣ Linting
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Configurar Node.js com pnpm
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
           cache: 'pnpm'
 
-      - name: Instalar dependências
+      - name: Install dependencies
         run: pnpm install
 
       - uses: biomejs/setup-biome@v2
@@ -35,19 +41,22 @@ jobs:
     name: 🔎 Type Check
     runs-on: ubuntu-latest
     steps:
-      - name: 🛑 Cancelar Execuções Anteriores
-        uses: styfle/cancel-workflow-action@0.12.1
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - uses: actions/checkout@v4
+      - name: Enable Corepack
+        run: corepack enable
 
-      - name: Configurar Node.js com pnpm
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
           cache: 'pnpm'
 
-      - name: Instalar dependências
+      - name: Install dependencies
         run: pnpm install
 
       - name: 🔎 Executar Verificação de Tipos
-        run: pnpm run typecheck
+        run: pnpm run type-check
