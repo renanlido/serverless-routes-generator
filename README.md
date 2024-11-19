@@ -60,6 +60,10 @@ pnpm add @renanlido/serverless-routes-generator
 
 ```
 
+ps: This command accept the following flags:
+
+- `-t [type]`: Type of the config file (js, ts, or json). Default is ts.
+
 3. Integrate the functional decorator on your serverless handler:
 
 ```typescript
