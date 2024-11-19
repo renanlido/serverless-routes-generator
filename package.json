@@ -27,12 +27,7 @@
 		"check:exports": "attw --pack .",
 		"local-release": "npm run build && changeset version && changeset publish"
 	},
-	"keywords": [
-		"serverless",
-		"route",
-		"generator",
-		"typescript"
-	],
+	"keywords": ["serverless", "route", "generator", "typescript"],
 	"exports": {
 		"./package.json": "./package.json",
 		".": {
@@ -56,11 +51,7 @@
 	"bugs": {
 		"url": "https://github.com/renanlido/serverless-routes-generator/issues"
 	},
-	"files": [
-		"dist",
-		"README",
-		"LICENSE"
-	],
+	"files": ["dist", "README", "LICENSE"],
 	"author": "Renan Oliveira <renanlido@yahoo.com.br> (https://www.renanlido.me)",
 	"license": "MIT",
 	"dependencies": {

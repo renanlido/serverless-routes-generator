@@ -1,4 +1,4 @@
-import { type GeneratorConfigFileData } from "@renanlido/serverless-routes-generator";
+import { GeneratorConfigFileData } from "@renanlido/serverless-routes-generator";
 
 export const config: GeneratorConfigFileData = {
 	pathPattern: "src/modules/**/handler.ts",

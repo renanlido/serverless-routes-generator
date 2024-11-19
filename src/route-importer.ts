@@ -8,20 +8,34 @@ import { ServerlessGenerator } from "./route-generator";
 import { lambdaIsRunning } from "./utils/lambda-is-running";
 
 async function importAllHandlers(data: GeneratorConfigFileData) {
-	const handlersPath = path.join(
-		process.cwd(),
-		`${data.projectRoot.concat("/").concat(data.pathPattern)}`,
-	);
+	try {
+		console.log("Importing all handlers...");
 
-	const handlers = globSync(handlersPath);
+		if (!data || !data.projectRoot || !data.pathPattern) {
+			throw new Error("Missing projectRoot or pathPattern in config file");
+		}
 
-	for (const handler of handlers) {
-		try {
+		const projectRoot = path.join(process.cwd(), data.projectRoot);
+
+		if (!projectRoot) {
+			throw new Error("Could not find project root");
+		}
+
+		console.log("Project root: ", projectRoot);
+
+		const handlersPath = path.join(
+			data.projectRoot.concat("/").concat(data.pathPattern),
+		);
+
+		const handlers = globSync(handlersPath);
+
+		for (const handler of handlers) {
 			const handlerUrl = url.pathToFileURL(handler).href;
 			await import(handlerUrl);
-		} catch (error) {
-			console.warn(`Warning: Could not import handler at ${handler}`, error);
 		}
+	} catch (error) {
+		console.log("Error importing all handlers: ", error);
+		throw new Error(error);
 	}
 }
 
@@ -51,8 +65,8 @@ export async function generate(configFile: GeneratorConfigFileData) {
 		generator.generate();
 
 		console.log("Route generation completed successfully!");
+		process.exit(0);
 	} catch (error) {
-		console.error("Error generating routes:", error);
-		process.exit(1);
+		throw new Error(error);
 	}
 }

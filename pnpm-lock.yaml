@@ -32,7 +32,7 @@ importers:
         version: 2.27.9
       '@renanlido/serverless-routes-generator':
         specifier: '*'
-        version: 1.0.11
+        version: 1.0.15
       '@serverless/typescript':
         specifier: ^3.38.0
         version: 3.38.0
@@ -1049,8 +1049,8 @@ packages:
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
 
-  '@renanlido/serverless-routes-generator@1.0.11':
-    resolution: {integrity: sha512-T7foR/BRYYQj0iulGUTWwfKeRw+5jZHeFZlQL2LUzwpJcM3+UCsKKa+QdhPgO7i2+IlfpfwOiV4O+fDp37hSXA==}
+  '@renanlido/serverless-routes-generator@1.0.15':
+    resolution: {integrity: sha512-02uJbuZl9hlz5rwj1PW6CeMHz5jiJKcF3BxMYau0wfKOWEa6zVNtCIHVM381GI3j9aEiTRI0IspIMBCw+cqK8A==}
     hasBin: true
 
   '@rollup/rollup-android-arm-eabi@4.24.3':
@@ -5849,7 +5849,7 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
-  '@renanlido/serverless-routes-generator@1.0.11':
+  '@renanlido/serverless-routes-generator@1.0.15':
     dependencies:
       commander: 12.1.0
       glob: 11.0.0

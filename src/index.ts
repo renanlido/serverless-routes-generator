@@ -16,4 +16,4 @@ export const execute = async () => {
 	await generate(data);
 };
 
-execute().catch(console.error);
+execute();
