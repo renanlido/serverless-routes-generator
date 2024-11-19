@@ -10,9 +10,11 @@ export type GeneratorConfigFileData = {
 
 function findProjectRoot(startPath: string): string {
 	const rootIndicators = ["package.json", "tsconfig.json", ".git"];
+	const maxDepth = 10; // Prevent infinite loop
 	let currentPath = startPath;
+	let depth = 0;
 
-	while (currentPath !== path.parse(currentPath).root) {
+	while (currentPath !== path.parse(currentPath).root && depth < maxDepth) {
 		if (
 			rootIndicators.some((indicator) =>
 				fs.existsSync(path.join(currentPath, indicator)),
@@ -21,23 +23,29 @@ function findProjectRoot(startPath: string): string {
 			return currentPath;
 		}
 		currentPath = path.dirname(currentPath);
+		depth++;
 	}
 
-	return process.cwd();
+	return startPath; // Return original path if no root indicators found
 }
 
 function parseTypeScriptConfig(content: string): GeneratorConfigFileData {
 	try {
-		// Enhanced regex to capture different export formats
+		// Clean the content first
+		const cleanContent = content
+			.replace(/\/\*[\s\S]*?\*\//g, "") // Remove multi-line comments
+			.replace(/\/\/.*/g, ""); // Remove single line comments
+
+		// Improved regex patterns that handle imports
 		const configPatterns = [
-			// export const config: Type = { ... }
-			/export\s+const\s+config\s*:\s*GeneratorConfigFileData\s*=\s*({[\s\S]*?});/,
-			// export const config = { ... }
-			/export\s+const\s+config\s*=\s*({[\s\S]*?});/,
-			// export default { ... }
-			/export\s+default\s*({[\s\S]*?});/,
-			// module.exports = { ... }
-			/module\.exports\s*=\s*({[\s\S]*?});/,
+			// Pattern for export with type and imports
+			/(?:import\s+[^;]+;\s*)?export\s+const\s+config\s*:\s*GeneratorConfigFileData\s*=\s*({[\s\S]*?});/,
+			// Pattern for simple export const
+			/(?:import\s+[^;]+;\s*)?export\s+const\s+config\s*=\s*({[\s\S]*?});/,
+			// Pattern for export default
+			/(?:import\s+[^;]+;\s*)?export\s+default\s*({[\s\S]*?});/,
+			// Pattern for module.exports
+			/(?:import\s+[^;]+;\s*)?module\.exports\s*=\s*({[\s\S]*?});/,
 		];
 
 		let configMatch: RegExpExecArray | null = null;
@@ -45,7 +53,7 @@ function parseTypeScriptConfig(content: string): GeneratorConfigFileData {
 
 		// Try each pattern until finding a match
 		for (const pattern of configPatterns) {
-			configMatch = pattern.exec(content);
+			configMatch = pattern.exec(cleanContent);
 			if (configMatch && configMatch[1]) {
 				matchedConfig = configMatch[1];
 				break;
@@ -53,36 +61,48 @@ function parseTypeScriptConfig(content: string): GeneratorConfigFileData {
 		}
 
 		if (!matchedConfig) {
-			throw new Error("Configuration not found in file");
+			console.error("Debug - Content being parsed:", cleanContent);
+			console.error("Debug - No pattern matched the content");
+			throw new Error("Configuration object not found in file");
 		}
 
-		// Clean up configuration object
+		// Normalize the config object string
 		const normalizedConfig = matchedConfig
 			.replace(/[\n\r\t]/g, "")
 			.replace(/\s+/g, " ")
-			.replace(/,\s*}/g, "}")
-			.replace(/\/\*[\s\S]*?\*\//g, "") // Remove multi-line comments
-			.replace(/\/\/.*/g, ""); // Remove single line comments
+			.replace(/,\s*}/g, "}");
 
 		// Convert string to object
 		try {
 			// eslint-disable-next-line no-new-func
 			const parseConfig = new Function(`return ${normalizedConfig}`)();
 
-			// Basic validation of required fields
-			if (!parseConfig.pathPattern || !parseConfig.projectRoot) {
+			// Validate required fields
+			if (
+				!parseConfig.pathPattern ||
+				typeof parseConfig.pathPattern !== "string"
+			) {
 				throw new Error(
-					"Invalid configuration: pathPattern and projectRoot are required",
+					"Invalid configuration: pathPattern is required and must be a string",
+				);
+			}
+
+			if (
+				!parseConfig.projectRoot ||
+				typeof parseConfig.projectRoot !== "string"
+			) {
+				throw new Error(
+					"Invalid configuration: projectRoot is required and must be a string",
 				);
 			}
 
 			return parseConfig as GeneratorConfigFileData;
 		} catch (evalError) {
-			console.error("Error evaluating configuration:", normalizedConfig);
-			throw new Error(`Error converting configuration: ${evalError}`);
+			console.error("Debug - Failed to evaluate config:", normalizedConfig);
+			throw new Error(`Error parsing configuration object: ${evalError}`);
 		}
 	} catch (error) {
-		console.error("File content:", content);
+		console.error("Debug - Original file content:", content);
 		throw error;
 	}
 }
@@ -90,49 +110,54 @@ function parseTypeScriptConfig(content: string): GeneratorConfigFileData {
 export async function importConfigFile() {
 	try {
 		const filename = "serverless-route.config";
-		const projectRoot = findProjectRoot(process.cwd());
+		const startPath = process.cwd();
+		const projectRoot = findProjectRoot(startPath);
 
-		// Try each file extension in the project root
-		const configFileJson = path.join(projectRoot, `${filename}.json`);
-		const configFileJs = path.join(projectRoot, `${filename}.js`);
-		const configFileTs = path.join(projectRoot, `${filename}.ts`);
+		console.log("Debug - Current working directory:", startPath);
+		console.log("Debug - Detected project root:", projectRoot);
 
-		// Debug log
-		console.log("Looking for configuration file in:");
-		console.log(`- ${configFileJson}`);
-		console.log(`- ${configFileJs}`);
-		console.log(`- ${configFileTs}`);
+		const configFiles = {
+			json: path.join(projectRoot, `${filename}.json`),
+			js: path.join(projectRoot, `${filename}.js`),
+			ts: path.join(projectRoot, `${filename}.ts`),
+		};
 
-		if (fs.existsSync(configFileJson)) {
-			console.log("JSON file found");
-			const data = fs.readFileSync(configFileJson, "utf-8");
+		console.log("Looking for configuration files in:");
+		Object.entries(configFiles).forEach(([type, filePath]) => {
+			console.log(
+				`- [${type.toUpperCase()}] ${filePath} (${fs.existsSync(filePath) ? "EXISTS" : "NOT FOUND"})`,
+			);
+		});
+
+		if (fs.existsSync(configFiles.json)) {
+			console.log("Using JSON configuration file");
+			const data = fs.readFileSync(configFiles.json, "utf-8");
 			return JSON.parse(data) as GeneratorConfigFileData;
 		}
 
-		if (fs.existsSync(configFileJs)) {
-			console.log("JS file found");
-			const data = await import(configFileJs);
+		if (fs.existsSync(configFiles.js)) {
+			console.log("Using JavaScript configuration file");
+			const data = await import(configFiles.js);
 			return data.default as GeneratorConfigFileData;
 		}
 
-		if (fs.existsSync(configFileTs)) {
-			console.log("TS file found");
-			const content = fs.readFileSync(configFileTs, "utf-8");
+		if (fs.existsSync(configFiles.ts)) {
+			console.log("Using TypeScript configuration file");
+			const content = fs.readFileSync(configFiles.ts, "utf-8");
 			return parseTypeScriptConfig(content);
 		}
 
 		throw new Error(
-			`Configuration file not found. Searched in:\n` +
-				`- ${configFileJson}\n` +
-				`- ${configFileJs}\n` +
-				`- ${configFileTs}`,
+			`Configuration file not found. Searched in:\n${Object.entries(configFiles)
+				.map(([_, path]) => `- ${path}`)
+				.join("\n")}`,
 		);
 	} catch (error) {
 		if (error instanceof Error) {
-			console.error("Detailed error:", error.message);
-			console.error("Stack:", error.stack);
+			console.error("Error details:", error.message);
+			console.error("Stack trace:", error.stack);
 			throw error;
 		}
-		throw new Error("Unknown error importing configuration file");
+		throw new Error("Unknown error while importing configuration file");
 	}
 }
