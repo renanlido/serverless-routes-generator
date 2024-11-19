@@ -10,11 +10,9 @@ export type GeneratorConfigFileData = {
 
 function findProjectRoot(startPath: string): string {
 	const rootIndicators = ["package.json", "tsconfig.json", ".git"];
-	const maxDepth = 10; // Prevent infinite loop
 	let currentPath = startPath;
-	let depth = 0;
 
-	while (currentPath !== path.parse(currentPath).root && depth < maxDepth) {
+	while (currentPath !== path.parse(currentPath).root) {
 		if (
 			rootIndicators.some((indicator) =>
 				fs.existsSync(path.join(currentPath, indicator)),
@@ -23,59 +21,24 @@ function findProjectRoot(startPath: string): string {
 			return currentPath;
 		}
 		currentPath = path.dirname(currentPath);
-		depth++;
 	}
 
-	return startPath; // Return original path if no root indicators found
+	return startPath;
 }
 
 function parseTypeScriptConfig(content: string): GeneratorConfigFileData {
 	try {
-		// Clean the content first
-		const cleanContent = content
-			.replace(/\/\*[\s\S]*?\*\//g, "") // Remove multi-line comments
-			.replace(/\/\/.*/g, ""); // Remove single line comments
+		const objectMatch = content.match(/config[^{]*=\s*({[\s\S]*?})/);
 
-		// Improved regex patterns that handle imports
-		const configPatterns = [
-			// Pattern for export with type and imports
-			/(?:import\s+[^;]+;\s*)?export\s+const\s+config\s*:\s*GeneratorConfigFileData\s*=\s*({[\s\S]*?});/,
-			// Pattern for simple export const
-			/(?:import\s+[^;]+;\s*)?export\s+const\s+config\s*=\s*({[\s\S]*?});/,
-			// Pattern for export default
-			/(?:import\s+[^;]+;\s*)?export\s+default\s*({[\s\S]*?});/,
-			// Pattern for module.exports
-			/(?:import\s+[^;]+;\s*)?module\.exports\s*=\s*({[\s\S]*?});/,
-		];
-
-		let configMatch: RegExpExecArray | null = null;
-		let matchedConfig = null;
-
-		// Try each pattern until finding a match
-		for (const pattern of configPatterns) {
-			configMatch = pattern.exec(cleanContent);
-			if (configMatch && configMatch[1]) {
-				matchedConfig = configMatch[1];
-				break;
-			}
-		}
-
-		if (!matchedConfig) {
-			console.error("Debug - Content being parsed:", cleanContent);
-			console.error("Debug - No pattern matched the content");
+		if (!objectMatch || !objectMatch[1]) {
 			throw new Error("Configuration object not found in file");
 		}
 
-		// Normalize the config object string
-		const normalizedConfig = matchedConfig
-			.replace(/[\n\r\t]/g, "")
-			.replace(/\s+/g, " ")
-			.replace(/,\s*}/g, "}");
+		const configString = objectMatch[1];
 
-		// Convert string to object
 		try {
-			// eslint-disable-next-line no-new-func
-			const parseConfig = new Function(`return ${normalizedConfig}`)();
+			// Convert the matched string to an object
+			const parseConfig = new Function(`return ${configString}`)();
 
 			// Validate required fields
 			if (
@@ -98,7 +61,7 @@ function parseTypeScriptConfig(content: string): GeneratorConfigFileData {
 
 			return parseConfig as GeneratorConfigFileData;
 		} catch (evalError) {
-			console.error("Debug - Failed to evaluate config:", normalizedConfig);
+			console.error("Debug - Extracted config string:", configString);
 			throw new Error(`Error parsing configuration object: ${evalError}`);
 		}
 	} catch (error) {
