@@ -5,10 +5,62 @@ import { Command } from "commander";
 
 const program = new Command();
 
+type ConfigFileType = "js" | "ts" | "json";
+
+function findProjectRoot(startPath: string): string {
+	const rootIndicators = ["package.json", "tsconfig.json", ".git"];
+	let currentPath = startPath;
+
+	while (currentPath !== path.parse(currentPath).root) {
+		if (
+			rootIndicators.some((indicator) =>
+				fs.existsSync(path.join(currentPath, indicator)),
+			)
+		) {
+			return currentPath;
+		}
+		currentPath = path.dirname(currentPath);
+	}
+
+	return process.cwd();
+}
+
+function generateConfigContent(type: ConfigFileType): string {
+	const configObjectTs = {
+		pathPattern: "src/modules/**/handler.ts",
+		projectRoot: "example",
+		generatedFileName: "serverless-routes",
+		generatedFileExtension: type === "json" ? "ts" : type,
+	};
+
+	const configObjectJs = {
+		pathPattern: "src/modules/**/handler.js",
+		projectRoot: "example",
+		generatedFileName: "serverless-routes",
+		generatedFileExtension: type,
+	};
+
+	switch (type) {
+		case "js":
+			return `module.exports = ${JSON.stringify(configObjectJs, null, 2)};`;
+		case "ts":
+			return `import { GeneratorConfigFileData } from '@renanlido/serverless-routes-generator';
+\n\nexport const config: GeneratorConfigFileData = ${JSON.stringify(configObjectTs, null, 2)};`;
+		case "json":
+			return JSON.stringify(configObjectTs, null, 2);
+		default:
+			throw new Error(`Tipo de arquivo não suportado: ${type}`);
+	}
+}
+
+function getConfigFilename(type: ConfigFileType): string {
+	return `serverless-route.config.${type}`;
+}
+
 program
 	.name("serverless-routes-generator")
 	.description("Simplify route creation for Serverless applications")
-	.version("1.0.0");
+	.version("1.0.1");
 
 program
 	.command("generate")
@@ -18,7 +70,7 @@ program
 
 		exec(`npx tsx ${scriptPath}`, (error, stdout, stderr) => {
 			if (error) {
-				console.error(`Erro ao executar o comando: ${error.message}`);
+				console.error(`Error on execute command: ${error.message}`);
 				process.exit(1);
 			}
 			if (stderr) {
@@ -31,41 +83,57 @@ program
 
 program
 	.command("init")
-	.description("Cria um arquivo de configuração padrão no diretório raiz")
-	.action(() => {
-		const configContent = `module.exports = {
-  pathPattern: "modules/**/handler.ts",
-  projectRoot: "example/src",
-  generatedFileName: "serverless-routes",
-};`;
+	.description("Create an initial configuration file on the project root")
+	.option(
+		"-t, --type <type>",
+		"Tipo do arquivo de configuração (js, ts, ou json)",
+		"ts",
+	)
+	.action((options) => {
+		const fileType = options.type.toLowerCase() as ConfigFileType;
 
-		const configFileName = "serverless-routes.config.js";
-
-		const configFilePath = path.resolve(process.cwd(), configFileName);
-
-		if (fs.existsSync(configFilePath)) {
-			console.error(
-				`O arquivo "${configFileName}" já existe no diretório raiz.`,
-			);
+		if (!["js", "ts", "json"].includes(fileType)) {
+			console.error("Invalid file type. Use js, ts, or json");
 			process.exit(1);
 		}
 
-		fs.writeFile(configFilePath, configContent, "utf8", (err) => {
-			if (err) {
-				console.error(
-					`Erro ao criar o arquivo de configuração: ${err.message}`,
-				);
-				process.exit(1);
-			}
+		const projectRoot = findProjectRoot(process.cwd());
+		const filename = getConfigFilename(fileType);
+		const configPath = path.join(projectRoot, filename);
+
+		const existingConfigs = ["js", "ts", "json"].map((ext) =>
+			path.join(projectRoot, `serverless-route.config.${ext}`),
+		);
+
+		if (existingConfigs.some((file) => fs.existsSync(file))) {
+			const existingFiles = existingConfigs
+				.filter((file) => fs.existsSync(file))
+				.map((file) => path.basename(file))
+				.join(", ");
+
+			console.error(`Already existing configuration files: ${existingFiles}`);
+			process.exit(1);
+		}
+
+		try {
+			const configContent = generateConfigContent(fileType);
+
+			fs.writeFileSync(configPath, configContent, "utf8");
+
 			console.log(
-				`Arquivo de configuração "${configFileName}" criado com sucesso no diretório raiz.`,
+				`✅ Configuration file "${filename}" success created:\n${configPath}`,
 			);
-		});
+		} catch (error) {
+			console.error(
+				"Error on create configuration file:",
+				error instanceof Error ? error.message : error,
+			);
+			process.exit(1);
+		}
 	});
 
 program.parse(process.argv);
 
-// If no arguments are provided, display help
 if (!process.argv.slice(2).length) {
 	program.outputHelp();
 }
