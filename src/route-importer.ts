@@ -67,6 +67,13 @@ export async function generate(configFile: GeneratorConfigFileData) {
 		console.log("Route generation completed successfully!");
 		process.exit(0);
 	} catch (error) {
-		throw new Error(error);
+		const err = error as Error;
+
+		console.error("Error generating routes: ", err.message);
+		console.error(err.stack);
+		console.error(JSON.stringify(err, null, 2));
+		console.error("Route generation failed!");
+
+		throw err;
 	}
 }
