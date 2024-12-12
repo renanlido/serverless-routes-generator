@@ -17,8 +17,6 @@ export class ServerlessGenerator {
 		const functions: Record<string, unknown> = {};
 
 		routes.forEach((route) => {
-			const functionName = route.name || route.path.replace(/\//g, "-");
-
 			const routeContext = route.context.indexOf(this.config.projectRoot);
 
 			let relativePath: string;
@@ -36,17 +34,9 @@ export class ServerlessGenerator {
 				path.join(this.basePath, relativePath, route.handlerRoutePath),
 			);
 
-			functions[functionName] = {
+			functions[route.name] = {
 				handler: handlerPath,
-				events: [
-					{
-						http: {
-							cors: route.cors ?? true,
-							method: route.method,
-							path: route.path,
-						},
-					},
-				],
+				events: route.events,
 			};
 		});
 
