@@ -8,11 +8,6 @@ type S3Event = {
 	s3: {
 		bucket: string;
 		event?: string;
-		events?: string[];
-		rules?: {
-			prefix?: string;
-			suffix?: string;
-		}[];
 		existing?: boolean;
 	};
 };

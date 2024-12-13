@@ -12,6 +12,12 @@ export const routePath = createHandler(
 					path: "/test",
 				},
 			},
+			{
+				s3: {
+					bucket: "bucket",
+					event: "s3:ObjectCreated:*",
+				},
+			},
 		],
 	},
 	async () => {
