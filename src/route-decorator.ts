@@ -1,37 +1,10 @@
 import path from "path";
+import { Events } from "./types/function";
 import { lambdaIsRunning } from "./utils/lambda-is-running";
-
-// src/shared/decorators/route.ts
-type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
-
-type S3Event = {
-	s3: {
-		bucket: string;
-		event?: string;
-		existing?: boolean;
-	};
-};
-
-export type HttpEvent = {
-	http: {
-		method: HttpMethod;
-		path: string;
-		cors?:
-			| boolean
-			| {
-					origins: string[];
-					headers: string[];
-					allowCredentials?: boolean;
-			  };
-		authorizer?: any;
-	};
-};
-
-type ServerlessEvent = S3Event | HttpEvent;
 
 type HttpRouteConfig = {
 	name: string;
-	events: ServerlessEvent[];
+	events: Events;
 };
 
 type RouteConfig = HttpRouteConfig;
@@ -61,7 +34,11 @@ const defineConfig = (
 	}
 
 	if (!functionName && config.events.find((event) => "http" in event)) {
-		const path = config.events.find((event) => "http" in event).http.path;
+		const path = (
+			config.events.find((event) => "http" in event) as {
+				http: { path: string };
+			}
+		).http.path;
 
 		// functionName = path.replace(/\//g, "-");
 		functionName = path.split("/")[path.split("/").length - 1];

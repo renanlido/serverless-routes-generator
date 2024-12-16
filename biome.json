@@ -7,7 +7,19 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"ignore": []
+		"ignore": [
+			"**/node_modules/",
+			"**/build/",
+			"**/dist/",
+			"**/coverage/",
+			"**/.env",
+			"**/*.log",
+			"**/*.js",
+			"**/*.d.ts",
+			"**/commitlint.config.mjs",
+			"**/.eslintrc.js",
+			"**/node_modules"
+		]
 	},
 	"formatter": {
 		"enabled": true,
