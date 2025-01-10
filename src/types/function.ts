@@ -10,12 +10,14 @@ import {
 	AwsCfInstruction,
 	AwsCfRef,
 	AwsKmsArn,
+	AwsLambdaLayers,
 	AwsLogGroupName,
 	AwsSecretsManagerArnString,
 	FilterPatterns,
 	FunctionName,
 } from "@serverless/typescript";
 
+export type Layers = AwsLambdaLayers;
 // Tipos Base
 export type BaseEvent = {
 	__schemaWorkaround__?: null;
