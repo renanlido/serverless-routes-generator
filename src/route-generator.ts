@@ -37,6 +37,7 @@ export class ServerlessGenerator {
 			functions[route.name] = {
 				handler: handlerPath,
 				events: route.events,
+				layers: route.layers,
 			};
 		});
 

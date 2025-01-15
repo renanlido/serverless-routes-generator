@@ -15,5 +15,10 @@ export const functions = {
 				},
 			},
 		],
+		layers: [
+			{
+				Ref: "LayerLambdaLayer",
+			},
+		],
 	},
 };
