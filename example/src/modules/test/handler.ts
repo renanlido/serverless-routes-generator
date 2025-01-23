@@ -24,6 +24,7 @@ export const routePath = createHandler(
 				Ref: "LayerLambdaLayer",
 			},
 		],
+		memorySize: 256,
 	},
 	async () => {
 		// This is a simple example of a handler that returns a JSON object

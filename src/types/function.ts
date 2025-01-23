@@ -5,14 +5,33 @@ import {
 	AwsArn,
 	AwsArnString,
 	AwsCfFunction,
+	AwsCfGetAtt,
 	AwsCfIf,
 	AwsCfImport,
 	AwsCfInstruction,
+	AwsCfJoin,
 	AwsCfRef,
+	AwsHttpApiPayload,
 	AwsKmsArn,
+	AwsLambdaArchitecture,
+	AwsLambdaEnvironment,
 	AwsLambdaLayers,
+	AwsLambdaMemorySize,
+	AwsLambdaRole,
+	AwsLambdaRuntime,
+	AwsLambdaRuntimeManagement,
+	AwsLambdaTimeout,
+	AwsLambdaTracing,
+	AwsLambdaVersioning,
+	AwsLambdaVpcConfig,
+	AwsLogDataProtectionPolicy,
 	AwsLogGroupName,
+	AwsLogRetentionInDays,
+	AwsResourceCondition,
+	AwsResourceDependsOn,
+	AwsResourceTags,
 	AwsSecretsManagerArnString,
+	EcrImageUri,
 	FilterPatterns,
 	FunctionName,
 } from "@serverless/typescript";
@@ -363,3 +382,89 @@ export type Events = (
 	| RabbitMQEvent
 	| MSKEvent
 )[];
+
+export type HttpRouteConfig = {
+	name: string;
+	events: Events;
+	layers?: Layers;
+	architecture?: AwsLambdaArchitecture;
+	awsKmsKeyArn?: AwsKmsArn;
+	condition?: AwsResourceCondition;
+	dependsOn?: AwsResourceDependsOn;
+	description?: string;
+	destinations?: {
+		onSuccess?:
+			| string
+			| {
+					arn: AwsCfFunction;
+					type: "function" | "sns" | "sqs" | "eventBus";
+			  };
+		onFailure?:
+			| string
+			| {
+					arn: AwsCfFunction;
+					type: "function" | "sns" | "sqs" | "eventBus";
+			  };
+	};
+	disableLogs?: boolean;
+	environment?: AwsLambdaEnvironment;
+	ephemeralStorageSize?: number;
+	fileSystemConfig?: {
+		arn: string | AwsCfGetAtt | AwsCfJoin | AwsCfImport;
+		localMountPath: string;
+	};
+	handler?: string;
+	image?:
+		| EcrImageUri
+		| {
+				name?: string;
+				uri?: EcrImageUri;
+				workingDirectory?: string;
+				command?: string[];
+				entryPoint?: string[];
+		  };
+	kmsKeyArn?: AwsKmsArn;
+	snapStart?: boolean;
+	logRetentionInDays?: AwsLogRetentionInDays;
+	logDataProtectionPolicy?: AwsLogDataProtectionPolicy;
+	maximumEventAge?: number;
+	maximumRetryAttempts?: number;
+	memorySize?: AwsLambdaMemorySize;
+	onError?: string | AwsCfFunction;
+	package?: {
+		artifact?: string;
+		exclude?: string[];
+		include?: string[];
+		individually?: boolean;
+		patterns?: string[];
+	};
+	provisionedConcurrency?: number | AwsCfFunction | AwsCfIf;
+	reservedConcurrency?: number | AwsCfFunction | AwsCfIf;
+	role?: AwsLambdaRole;
+	runtime?: AwsLambdaRuntime;
+	runtimeManagement?: AwsLambdaRuntimeManagement;
+	tags?: AwsResourceTags;
+	timeout?: AwsLambdaTimeout;
+	tracing?: AwsLambdaTracing;
+	url?:
+		| boolean
+		| {
+				authorizer?: "aws_iam";
+				cors?:
+					| boolean
+					| {
+							allowCredentials?: boolean;
+							allowedHeaders?: string[];
+							allowedMethods?: string[];
+							allowedOrigins?: string[];
+							exposedResponseHeaders?: string[];
+							maxAge?: number;
+					  };
+				invokeMode?: "BUFFERED" | "RESPONSE_STREAM";
+		  };
+	versionFunction?: AwsLambdaVersioning;
+	vpc?: AwsLambdaVpcConfig;
+	httpApi?: {
+		payload?: AwsHttpApiPayload;
+	};
+};

@@ -20,5 +20,6 @@ export const functions = {
 				Ref: "LayerLambdaLayer",
 			},
 		],
+		memorySize: 256,
 	},
 };

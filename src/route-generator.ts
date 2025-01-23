@@ -17,12 +17,14 @@ export class ServerlessGenerator {
 		const functions: Record<string, unknown> = {};
 
 		routes.forEach((route) => {
+			const { name, events, context, handlerRoutePath, ...rest } = route;
+
 			const routeContext = route.context.indexOf(this.config.projectRoot);
 
 			let relativePath: string;
 
 			if (routeContext !== -1) {
-				relativePath = route.context.substring(routeContext);
+				relativePath = context.substring(routeContext);
 			}
 
 			if (!relativePath) {
@@ -31,13 +33,13 @@ export class ServerlessGenerator {
 
 			const handlerPath = path.relative(
 				this.basePath,
-				path.join(this.basePath, relativePath, route.handlerRoutePath),
+				path.join(this.basePath, relativePath, handlerRoutePath),
 			);
 
-			functions[route.name] = {
+			functions[name] = {
 				handler: handlerPath,
-				events: route.events,
-				layers: route.layers,
+				events: events,
+				...rest,
 			};
 		});
 

@@ -1,12 +1,6 @@
 import path from "path";
-import { Events, Layers } from "./types/function";
+import { HttpRouteConfig } from "./types/function";
 import { lambdaIsRunning } from "./utils/lambda-is-running";
-
-type HttpRouteConfig = {
-	name: string;
-	events: Events;
-	layers?: Layers;
-};
 
 type RouteConfig = HttpRouteConfig;
 
