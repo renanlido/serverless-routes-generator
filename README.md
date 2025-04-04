@@ -51,18 +51,26 @@ pnpm add @renanlido/serverless-routes-generator
 
 2. Create de configuration script run and customize the configuration for your project:
 
-```json
-{
-  "scripts": {
-    "generator-init": "serverless-routes-generator init"
-  }
-}
-
+```bash
+serverless-routes-generator init
 ```
 
 ps: This command accept the following flags:
 
 - `-t [type]`: Type of the config file (js, ts, or json). Default is ts.
+
+The generated config file will be created based on the specified type (js, ts, or json). Example:
+
+```typescript
+import { type GeneratorConfigFileData } from '@renanlido/serverless-routes-generator'
+
+export const config: GeneratorConfigFileData = {
+  pathPattern: 'functions/**/handler.ts',
+  projectRoot: 'src',
+  generatedFileName: 'serverless-routes',
+  generatedFileExtension: 'ts',
+}
+```
 
 3. Integrate the functional decorator on your serverless handler:
 
@@ -71,14 +79,21 @@ import { createHandler } from "@renanlido/serverless-routes-generator";
 
 export const generatePresignedLink = createHandler(
   {
-    method: 'POST',
-    path: 'test/route-path',
-    cors: true,
-    name: 'route-path',
-  },
+    events: [
+      // all lambda events
+      {
+        http: {
+          method: 'POST',
+          path: 'example/route',
+          cors: true,
+        },
+      },
+    ],
+    layers: [
+      'arn:aws:lambda:region:account-id:layer:layer-name:version'
+    ]
   () => {
   // Any handler function here
-
     return {
       statusCode: 200,
       body: JSON.stringify({ message: 'Hello World' }),
@@ -96,6 +111,18 @@ export const generatePresignedLink = createHandler(
   }
 }
 
+```
+
+This command will create a file called serverless-routes.ts. Import it into your serverless.ts. That's it!
+
+```typescript
+import { functions } from './serverless-routes'
+
+// ...others configurations
+functions: {
+    ...functions,
+  }
+// ...other configurations
 ```
 
 ## Development Setup
